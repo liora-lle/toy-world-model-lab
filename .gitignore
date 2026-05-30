@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+
+.venv/
+venv/
+
+data/raw/
+data/processed/
+
+outputs/checkpoints/
+*.pth
+*.pt
+
+.ipynb_checkpoints/
+
+.DS_Store
+.vscode/
