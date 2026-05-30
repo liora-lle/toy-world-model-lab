@@ -12,7 +12,6 @@
 - 编写 .gitignore
 - 编写 configs/default.yaml
 - 创建 concepts.md 概念笔记
-- 创建 LagerNVS 论文笔记模板
 - 创建 experiment_log.md 实验记录模板
 - 初始化 Git 仓库，并连接到 GitHub
 - 完成第一次 GitHub push
@@ -105,8 +104,6 @@ batch 图片 shape: [batch_size, 1, 28, 28]
 - src/test_torch.py
 
 ## 遇到的问题
-
-- 一开始不清楚 VSCode 和 Typora 打开 README.md 的关系，后来理解了它们本质上是在编辑同一个本地文件，关键是要保存并确认路径一致。
 - 使用 git add . 时出现 LF/CRLF warning，后来理解这是 Windows 换行符提示，不是错误。
 - 第一次 git commit 时命令写成了错误格式，后来理解正确写法是：
 
