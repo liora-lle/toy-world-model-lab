@@ -69,3 +69,96 @@
 - 理解 encoder、decoder 和 latent representation 的作用
 - 保存 autoencoder_reconstruction.png 到 outputs/figures/
 - 后续从图片重建过渡到小球下一帧预测任务
+
+## exp002_ball_image_generation
+
+日期：2026-06-01
+
+目标：验证 generate_ball_image 是否能根据给定位置生成 32x32 小球图像。
+
+配置：
+- image_size: 32
+- radius: 2
+- positions: (8,8), (16,16), (24,24), (8,24), (24,8)
+
+结果：
+- 成功生成小球图像
+- 成功显示不同位置的小球
+
+观察：
+- x 增大时，小球向右移动
+- y 增大时，小球向下移动
+- 图像像素值范围为 0 到 1
+
+问题：
+- 待补充
+
+下一步：
+- 增加 action 更新函数
+- 实现 up/down/left/right 对小球位置的控制
+
+
+## exp003_action_update
+
+日期：2026-06-01
+
+目标：验证 action 是否能正确更新小球位置。
+
+配置：
+- image_size: 32
+- radius: 2
+- step_size: 4
+- actions: up / down / left / right
+- start_position: (16, 16)
+
+结果：
+- 成功定义 `ACTION_TO_DELTA`
+- 成功实现 `update_position`
+- 成功根据 action 更新小球位置
+- 成功生成 current_image 和 next_image
+- 成功可视化动作前后的变化
+
+观察：
+- `right` 会让 x 增大
+- `left` 会让 x 减小
+- `up` 会让 y 减小
+- `down` 会让 y 增大
+- 图像坐标系的原点在左上角
+- `step_size` 控制单步动作移动幅度
+- 对 32x32 图像来说，`step_size=4` 比 `step_size=1` 更容易观察
+
+问题：
+- 如果 `step_size` 太小，视觉变化不明显
+- 如果 `step_size` 太大，小球移动会太跳跃
+- 需要边界处理，避免小球跑出图像
+
+下一步：
+- 生成连续 episode
+- 将单步动作扩展为动作序列
+
+
+## exp004_generate_episode
+
+日期：2026-06-01
+
+目标：生成一段连续的小球运动 episode，理解 trajectory / episode 的基本形式。
+
+配置：
+- image_size: 32
+- sequence_length: 6
+- radius: 2
+- step_size: 4
+- start_position: (16, 16)
+- actions: random choice from up / down / left / right
+
+结果：
+- 成功实现 `generate_episode`
+- 成功生成 6 帧小球图像
+- 成功生成 5 个 action
+- 成功记录每一帧的小球位置
+- 成功可视化一段连续小球运动过程
+
+观察：
+- 一段 episode 中，frames 数量比 actions 数量多 1
+- action 表示两个相邻 frame 之间发生的动作
+- episode 可以拆成多个训练样本：
