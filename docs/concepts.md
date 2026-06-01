@@ -100,3 +100,15 @@ action: up / down / left / right
 next_observation: 下一帧小球图像
 episode: 一段小球运动轨迹
 ```
+
+
+## Action Scale
+
+Action scale 表示一个动作的幅度。
+在本项目中，`step_size` 控制小球每次移动多少像素。
+```text
+step_size = 1: movement is small
+step_size = 4: movement is easier to observe
+动作太小：状态变化不明显
+动作太大：容易不稳定或越界
+```
