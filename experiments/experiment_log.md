@@ -162,3 +162,39 @@
 - 一段 episode 中，frames 数量比 actions 数量多 1
 - action 表示两个相邻 frame 之间发生的动作
 - episode 可以拆成多个训练样本：
+
+
+## exp005_pytorch_dataset
+
+日期：2026-06-01
+
+目标：将小球 episode 拆分成 PyTorch Dataset 样本。
+
+配置：
+- num_sequences: 10
+- sequence_length: 6
+- image_size: 32
+- radius: 2
+- step_size: 4
+- batch_size: 8
+
+结果：
+- 成功构建 BallWorldModelDataset
+- 成功返回 observation、action、next_observation
+- 成功使用 DataLoader 读取 batch
+
+观察：
+- 每条 episode 有 sequence_length 帧和 sequence_length - 1 个 action
+- Dataset 样本数量 = num_sequences * (sequence_length - 1)
+- observation shape 为 [1, 32, 32]
+- batch observation shape 为 [batch_size, 1, 32, 32]
+- action 已经从字符串转换为数字编号
+
+问题：
+- 当前 action 只是整数编号，后续模型中可能需要 embedding 或 one-hot
+- 当前数据全部在初始化时生成，数据量很大时需要考虑更高效的数据生成方式
+
+下一步：
+- 构建最小 world model
+- 输入 observation 和 action
+- 输出 next_observation
