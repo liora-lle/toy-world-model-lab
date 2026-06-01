@@ -1,4 +1,6 @@
 import numpy as np
+import torch
+from torch.utils.data import Dataset
 
 
 ACTION_TO_DELTA = {
@@ -6,6 +8,21 @@ ACTION_TO_DELTA = {
     "down": (0, 1),
     "left": (-1, 0),
     "right": (1, 0),
+}
+
+
+ACTION_TO_ID = {
+    "up": 0,
+    "down": 1,
+    "left": 2,
+    "right": 3,
+}
+
+ID_TO_ACTION = {
+    0: "up",
+    1: "down",
+    2: "left",
+    3: "right",
 }
 
 
@@ -123,3 +140,63 @@ def generate_episode(
             )
 
     return frames, episode_actions, positions
+
+
+
+class BallWorldModelDataset(Dataset):
+    """
+    PyTorch Dataset for the toy ball world model.
+
+    Each sample is:
+
+        observation + action -> next_observation
+    """
+
+    def __init__(
+        self,
+        num_sequences=500,
+        sequence_length=6,
+        image_size=32,
+        radius=2,
+        step_size=4,
+    ):
+        self.samples = []
+
+        for _ in range(num_sequences):
+            frames, actions, positions = generate_episode(
+                image_size=image_size,
+                sequence_length=sequence_length,
+                radius=radius,
+                start_x=image_size // 2,
+                start_y=image_size // 2,
+                step_size=step_size,
+            )
+
+            for i, action in enumerate(actions):
+                observation = frames[i]
+                next_observation = frames[i + 1]
+                action_id = ACTION_TO_ID[action]
+
+                self.samples.append(
+                    {
+                        "observation": observation,
+                        "action": action_id,
+                        "next_observation": next_observation,
+                    }
+                )
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, index):
+        sample = self.samples[index]
+
+        observation = torch.tensor(sample["observation"], dtype=torch.float32).unsqueeze(0)
+        action = torch.tensor(sample["action"], dtype=torch.long)
+        next_observation = torch.tensor(sample["next_observation"], dtype=torch.float32).unsqueeze(0)
+
+        return {
+            "observation": observation,
+            "action": action,
+            "next_observation": next_observation,
+        }
